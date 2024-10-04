@@ -160,11 +160,11 @@ namespace ASPTestRustami
         {
             string query = $"UPDATE Employees SET {nameof(Employee.PayrollNumber)} = @PayrollNumber, {nameof(Employee.Forenames)} = @Forenames, {nameof(Employee.Surname)} = @Surname," +
                 $"{nameof(Employee.DateOfBirth)} = @DateOfBirth, {nameof(Employee.Telephone)} = @Telephone, {nameof(Employee.Mobile)} = @Mobile, {nameof(Employee.Adress)} = @Adress," +
-                $"{nameof(Employee.Adress2)} = @Adress2, {nameof(Employee.Postcode)} = @Postcode, {nameof(Employee.Email)} = @Email, {nameof(Employee.StartDate)} = @StartDate" +
+                $"{nameof(Employee.Adress2)} = @Adress2, {nameof(Employee.Postcode)} = @Postcode, {nameof(Employee.Email)} = @Email, {nameof(Employee.StartDate)} = @StartDate " +
                 $"WHERE Id = @Id";
             using (SqlConnection connection = new SqlConnection(CONNECTION_STRING))
             {
-                using (SqlCommand command = new SqlCommand(query))
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@PayrollNumber", employee.PayrollNumber);
                     command.Parameters.AddWithValue("@Forenames", employee.Forenames);
@@ -177,11 +177,11 @@ namespace ASPTestRustami
                     command.Parameters.AddWithValue("@Postcode", employee.Postcode);
                     command.Parameters.AddWithValue("@Email", employee.Email);
                     command.Parameters.AddWithValue("@StartDate", employee.StartDate);
-                    command.Parameters.AddWithValue("Id", employee.Id);
-
-                    connection.Open();
+                    command.Parameters.AddWithValue("@Id", employee.Id);
+                    
                     try
                     {
+                        connection.Open();
                         command.ExecuteNonQuery();
                     }
                     catch (SqlException ex)
