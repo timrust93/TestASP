@@ -5,6 +5,8 @@ using System.Web;
 
 namespace ASPTestRustami.Models
 {
+    // DO NOT!!!!! change the property names as they are used for database
+
     public class Employee
     {
         public int Id { get; set; }

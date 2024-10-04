@@ -59,58 +59,6 @@ namespace ASPTestRustami
             return empployeeList;
         }
 
-
-        /// <summary>
-        /// Adds to database Employees table from .csv file
-        /// </summary>
-        /// <param name="fileContent"></param>
-        /// <returns></returns>
-        public int AddCSVForEmployees(byte[] fileContent)
-        {
-            List<Employee> employeeList = new List<Employee>();
-            try
-            {
-                // Read csv file, first line is header that contains column names
-                using (MemoryStream memoryStream = new MemoryStream(fileContent))
-                {
-                    using (StreamReader reader = new StreamReader(memoryStream))
-                    {
-                        bool isColumnNameLine = true;
-                        while (!reader.EndOfStream)
-                        {
-                            string line = reader.ReadLine();
-                            if (isColumnNameLine)
-                            {
-                                isColumnNameLine = false;
-                                continue;
-                            }
-
-                            string[] values = line.Split(',');
-                            Employee employee = new Employee();
-
-                            employee.PayrollNumber = values[0];
-                            employee.Forenames = values[1];
-                            employee.Surname = values[2];
-                            employee.DateOfBirth = Convert.ToDateTime(values[3]);
-                            employee.Telephone = values[4];
-                            employee.Mobile = values[5];
-                            employee.Adress = values[6];
-                            employee.Adress2 = values[7];
-                            employee.Postcode = values[8];
-                            employee.Email = values[9];
-                            employee.StartDate = Convert.ToDateTime(values[10]);
-                            employeeList.Add(employee);
-                        }
-                    }
-                }
-                return AddEmployees(employeeList);
-            }
-            catch (Exception ex)
-            {
-                return 0;
-            }
-        }
-
         // Adds employee list to actual database
         public int AddEmployees(List<Employee> employees)
         {
@@ -193,6 +141,57 @@ namespace ASPTestRustami
                         connection.Close();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Adds to database Employees table from .csv file
+        /// </summary>
+        /// <param name="fileContent"></param>
+        /// <returns></returns>
+        public int AddCSVForEmployees(byte[] fileContent)
+        {
+            List<Employee> employeeList = new List<Employee>();
+            try
+            {
+                // Read csv file, first line is header that contains column names
+                using (MemoryStream memoryStream = new MemoryStream(fileContent))
+                {
+                    using (StreamReader reader = new StreamReader(memoryStream))
+                    {
+                        bool isColumnNameLine = true;
+                        while (!reader.EndOfStream)
+                        {
+                            string line = reader.ReadLine();
+                            if (isColumnNameLine)
+                            {
+                                isColumnNameLine = false;
+                                continue;
+                            }
+
+                            string[] values = line.Split(',');
+                            Employee employee = new Employee();
+
+                            employee.PayrollNumber = values[0];
+                            employee.Forenames = values[1];
+                            employee.Surname = values[2];
+                            employee.DateOfBirth = Convert.ToDateTime(values[3]);
+                            employee.Telephone = values[4];
+                            employee.Mobile = values[5];
+                            employee.Adress = values[6];
+                            employee.Adress2 = values[7];
+                            employee.Postcode = values[8];
+                            employee.Email = values[9];
+                            employee.StartDate = Convert.ToDateTime(values[10]);
+                            employeeList.Add(employee);
+                        }
+                    }
+                }
+                return AddEmployees(employeeList);
+            }
+            catch (Exception ex)
+            {
+                return 0;
             }
         }
     }

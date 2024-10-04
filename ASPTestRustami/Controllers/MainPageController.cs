@@ -15,24 +15,6 @@ namespace ASPTestRustami.Controllers
 {
     public class MainPageController : Controller
     {
-        private MainPageModel _model;
-        private MainPageModel Model
-        {
-            get
-            {
-                if (_model == null)
-                {
-                    _model = new MainPageModel();                
-                }
-                return _model;
-            }
-            set
-            {
-                _model = value;
-            }
-        }
-
-
         // GET: MainPage
         public ActionResult Index()
         {
@@ -51,7 +33,7 @@ namespace ASPTestRustami.Controllers
                     ViewBag.Message = "No rows added. Maybe file issue";
                 }
             }     
-            return View(Model);
+            return View();
         }
 
         // This method expects .csv file to upload to database
@@ -73,7 +55,6 @@ namespace ASPTestRustami.Controllers
 
             // Data to display when the page reloads after uploading
             ViewBag.Message = rowsAdded > 0 ? $"{rowsAdded} rows were successfully added." : "No rows were added.";
-            ViewBag.Model = Model;
             TempData["rowsAdded"] = rowsAdded;
 
             return RedirectToAction("Index");

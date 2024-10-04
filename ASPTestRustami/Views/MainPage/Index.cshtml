@@ -67,6 +67,7 @@
     };
 </script>
 
+<!--Table to display employees-->
 @section Table
 {
     <div class="control-section">
@@ -102,11 +103,11 @@
             if ((args.requestType === 'beginEdit' || args.requestType === 'add')) {
                 var dialog = args.dialog;
                 dialog.showCloseIcon = true;
-                dialog.maxheight = 'none';
+                dialog.maxheight = '800px'; @*max height is not working*@
+
                 dialog.height = '800px';
                 dialog.width = '800px';
-
-                //dialog.refresh();
+                
                 // change the header of the dialog
                 dialog.header = args.requestType === 'beginEdit' ? 'Edit Record of id ' + args.rowData['Id'] : 'New Customer';
             }
