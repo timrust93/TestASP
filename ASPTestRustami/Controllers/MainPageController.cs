@@ -9,6 +9,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ASPTestRustami.Models;
+using System.Runtime.InteropServices;
 
 namespace ASPTestRustami.Controllers
 {
@@ -19,7 +20,11 @@ namespace ASPTestRustami.Controllers
         {
             get
             {
-                return _model == null ? new MainPageModel() : _model;
+                if (_model == null)
+                {
+                    _model = new MainPageModel();                
+                }
+                return _model;
             }
             set
             {
@@ -48,10 +53,9 @@ namespace ASPTestRustami.Controllers
             }
 
             // Load data to show it on a page. Model for page will store
-            //DatabaseAccess dbAccess = new DatabaseAccess();
-            //List<Employee> employeeList = dbAccess.ReadEmployess();            
-            //var model = Model;            
-            //model.EmployeeList = employeeList;
+            DatabaseAccess dbAccess = new DatabaseAccess();
+            List<Employee> employeeList = dbAccess.ReadEmployess();
+            Model.EmployeeList = employeeList;            
 
             return View(Model);
         }
@@ -84,12 +88,25 @@ namespace ASPTestRustami.Controllers
         public ActionResult UrlDatasource(DataManagerRequest dm)
         {
             DatabaseAccess dbA = new DatabaseAccess();
-            var employeeList = dbA.ReadEmployess();
-            //employeeList.Sort((x, y) => x.Surname.CompareTo(y.Surname));
+            var employeeList = dbA.ReadEmployess();            
 
             IEnumerable DataSource = employeeList;
             DataOperations operation = new DataOperations();
             int count = employeeList.Count;
+
+            if (dm.Sorted != null && dm.Sorted.Count > 0)
+            {
+                DataSource = operation.PerformSorting(DataSource, dm.Sorted);
+            }
+            else
+            {
+                employeeList.Sort((x, y) => x.Surname.CompareTo(y.Surname));
+                DataSource = employeeList;
+            }
+            if (dm.Where != null && dm.Where.Count > 0)
+            {
+                DataSource = operation.PerformFiltering(DataSource, dm.Where, "and");
+            }
             
             if (dm.Skip != 0)
             {

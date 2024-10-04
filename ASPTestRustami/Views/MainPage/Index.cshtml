@@ -80,7 +80,7 @@
 @section Table
 {
     <div class="control-section">
-        @Html.EJS().Grid("CommandColumn").DataSource(dataManager => { dataManager.Url("/MainPage/UrlDatasource").UpdateUrl("/MainPage/Update").Adaptor("UrlAdaptor"); }).ActionComplete("actionComplete").Columns(col =>
+        @Html.EJS().Grid("DialogTemplateEdit").DataSource(dataManager => { dataManager.Url("/MainPage/UrlDatasource").UpdateUrl("/MainPage/Update").Adaptor("UrlAdaptor"); }).ActionComplete("actionComplete").Columns(col =>
    {
        col.Field("Id").IsIdentity(true).IsPrimaryKey(true).HeaderText("Id").Width(30).AllowEditing(false).AllowFiltering(false).Add();
        col.Field("PayrollNumber").HeaderText("Payroll Number").ValidationRules(new { required = "true" }).Add();
