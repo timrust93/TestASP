@@ -1,0 +1,124 @@
+﻿@using Syncfusion.EJ2;
+
+@*This is the main page, tha contains table of employees*@
+
+<head>
+    <!-- Syncfusion ASP.NET MVC controls styles -->
+    <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/27.1.48/fluent.css" />
+    <!-- Syncfusion ASP.NET MVC controls scripts -->
+    <script src="https://cdn.syncfusion.com/ej2/27.1.48/dist/ej2.min.js"></script>
+</head>
+
+<!--Show if any rows added or not after user tried to upload. The viewbag props come from TempData in controller-->
+@{
+    if (ViewBag.Message != null)
+    {
+        if (ViewBag.IsRowsAdded)
+        {
+            <div class="alert alert-success">
+                @ViewBag.Message
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger">
+                @ViewBag.Message
+            </div>
+        }
+    }
+}
+
+<h2>Main Page</h2>
+
+<p>Select .csv file to upload to database:</p>
+<form id="fileUploadForm" action="/MainPage/Upload" method="post" enctype="multipart/form-data">
+    <!-- File Input (Hidden but part of the form) -->
+    <input type="file" id="fileInput" name="file" style="display:none;" />
+
+    <!-- Button to open file explorer -->
+    <button type="button" class="btn btn-secondary" onclick="document.getElementById('fileInput').click();">
+        Select File
+    </button>
+
+    <!-- Submit button to trigger form submission -->
+    <button type="submit" class="btn btn-primary">
+        Upload
+    </button>
+</form>
+
+<!-- Display the selected file name -->
+<p id="fileName"></p>
+
+@*@{
+        if (Model.EmployeeList.Count == 0)
+        {
+            <div style="height: 20pt"></div>
+            <div style="text-align: center;">
+                There is no data to display
+            </div>
+        }
+    }*@
+
+<script>
+    // Display the selected file name for feedback
+    document.getElementById('fileInput').onchange = function () {
+        var fileName = this.files[0] ? "file selected: " + this.files[0].name : "No file selected";
+        document.getElementById('fileName').textContent = fileName;
+    };
+
+
+    // Handle form submission to check if a file is selected
+    document.getElementById('fileUploadForm').onsubmit = function (event) {
+        var fileInput = document.getElementById('fileInput');
+        if (!fileInput.files.length || file.files.length > 1) {  // Check if file input is empty or many files
+            alert("Please select one file before uploading.");  // Show alert box
+            event.preventDefault();  // Stop form submission
+        }
+    };
+</script>
+
+@section Table
+{
+    <div class="control-section">
+        @Html.EJS().Grid("CommandColumn").DataSource(dataManager => { dataManager.Url("/MainPage/UrlDatasource").UpdateUrl("/MainPage/Update").Adaptor("UrlAdaptor"); }).ActionComplete("actionComplete").Columns(col =>
+   {
+       col.Field("Id").IsIdentity(true).IsPrimaryKey(true).HeaderText("Id").Width(30).AllowEditing(false).AllowFiltering(false).Add();
+       col.Field("PayrollNumber").HeaderText("Payroll Number").ValidationRules(new { required = "true" }).Add();
+       col.Field("Forenames").HeaderText("Name").ValidationRules(new { required = "true" }).Add();
+       col.Field("Surname").HeaderText("Surname").ValidationRules(new { required = "true" }).Add();
+       col.Field("DateOfBirth").HeaderText("Date of birth").ValidationRules(new { required = "true" }).EditType("datepickeredit").Add();
+       col.Field("Telephone").HeaderText("Telephone").ValidationRules(new { required = "true" }).EditType("stringedit").Edit(null).Add();
+       col.Field("Mobile").HeaderText("Mobile").Add();
+       col.Field("Adress").HeaderText("Adress").ValidationRules(new { required = "true" }).Add();
+       col.Field("Adress2").HeaderText("Adress 2").Add();
+       col.Field("Postcode").HeaderText("Postcode").ValidationRules(new { required = "true" }).Add();
+       col.Field("Email").HeaderText("Email").ValidationRules(new { required = "true" }).Add();
+       col.Field("StartDate").HeaderText("Start date").ValidationRules(new { required = "true" }).EditType("datepickeredit").Add();
+   }).AllowSorting().AllowResizing().FilterSettings(filter => { filter.ShowFilterBarStatus(true); filter.Type(Syncfusion.EJ2.Grids.FilterType.Menu); }).AllowFiltering().EditSettings(edit => { edit.AllowEditing(true).Mode(Syncfusion.EJ2.Grids.EditMode.Dialog); }).Render()
+    </div>
+
+    <!--Customization of the edit dialog for grid-->
+    <script>
+        ej.base.L10n.load({
+            'en-US': {
+                'grid': {
+                    'SaveButton': 'Submit',
+                    'CancelButton': 'Discard'
+                }
+            }
+        });
+
+        function actionComplete(args) {
+            if ((args.requestType === 'beginEdit' || args.requestType === 'add')) {
+                var dialog = args.dialog;
+                dialog.showCloseIcon = true;
+                dialog.height = 600;
+                // change the header of the dialog
+                dialog.header = args.requestType === 'beginEdit' ? 'Edit Record of id ' + args.rowData['Id'] : 'New Customer';
+            }
+        }
+    </script>
+}
+
+
+
